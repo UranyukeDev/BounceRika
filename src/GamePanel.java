@@ -1,12 +1,9 @@
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.net.URL;
@@ -25,6 +22,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private int lives = 30;
     private Font gameFont = new Font("Arial", Font.BOLD, 20);
     private boolean scoreEnabled = true;
+    private boolean isGameOver = false;
 
     public GamePanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -59,10 +57,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             g.drawString("" + lives, 20, 60);
         }
 
-        if (lives <= 0){
-            g.setColor(Color.RED);
+        if (isGameOver) {
+            g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 40));
-            g.drawString("GAME OVER", WIDTH / 2 - 120, HEIGHT / 2);
+            String gameOverText = "GAME OVER";
+            int textWidth = g.getFontMetrics().stringWidth(gameOverText);
+            g.drawString(gameOverText, (WIDTH - textWidth) / 2, HEIGHT / 2);
+        
+            g.setFont(new Font("Arial", Font.PLAIN, 20));
+            String restartText = "Press R to restart";
+            int restartWidth = g.getFontMetrics().stringWidth(restartText);
+            g.drawString(restartText, (WIDTH - restartWidth) / 2, HEIGHT / 2 + 40);
         }
     }
 
@@ -120,10 +125,21 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         repaint();
 
         if (lives <= 0 && scoreEnabled) {
+            isGameOver = true;
             timer.stop();
-            return;
         }
     }
+
+    private void restartGame() {
+        score = 0;
+        lives = 20;
+        hitCount = 0;
+        isGameOver = false;
+        backgroundImage = new ImageIcon(getClass().getResource("/res/classroom.jpg")).getImage();
+        balls.clear();
+        balls.add(new RikaBall(WIDTH / 2, HEIGHT / 2));
+        timer.start();
+    }    
 
     public static void playSoundStatic(String soundFile) {
         try {
@@ -144,6 +160,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             scoreEnabled = !scoreEnabled;
             score = 0;
             lives = 30;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_R && isGameOver) {
+            restartGame();
         }
     }
 
