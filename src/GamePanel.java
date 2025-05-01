@@ -11,15 +11,17 @@ import java.net.URL;
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     final int WIDTH = 800, HEIGHT = 600;
-    Paddle paddle;
-    ArrayList<Ball> balls = new ArrayList<>();
-    Timer timer;
-    boolean leftPressed = false, rightPressed = false;
+    private Paddle paddle;
+    private ArrayList<Ball> balls = new ArrayList<>();
+    private ArrayList<Fragment> fragments = new ArrayList<>();
+    private Timer timer;
+    private boolean leftPressed = false, rightPressed = false;
     private Image backgroundImage;
 
     private int hitCount = 0;
     private int score = 0;
-    private int lives = 30;
+    private static int lives = 30;
+    private int fragmentSpawnCounter = 0;
     private Font gameFont = new Font("Arial", Font.BOLD, 20);
     private boolean scoreEnabled = true;
     private boolean isGameOver = false;
@@ -45,8 +47,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 
         paddle.draw(g);
+
         for (Ball ball : balls) {
             ball.draw(g);
+        }
+        for (Fragment frag : fragments) {
+            frag.draw(g);
         }
 
         if(scoreEnabled){
@@ -79,6 +85,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         ArrayList<Ball> newBalls = new ArrayList<>();
         Iterator<Ball> it = balls.iterator();
 
+        fragmentSpawnCounter++;
+        if (fragmentSpawnCounter >= 1000) {
+            fragments.add(new Fragment((int)(Math.random() * (WIDTH - 30)), 0));
+            fragmentSpawnCounter = 0;
+        }
+
         while (it.hasNext()) {
             Ball ball = it.next();
             ball.move(WIDTH, HEIGHT);
@@ -96,13 +108,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
                 if (hitCount % 5 == 0) {
                     Ball newBall;
-
-                    if (score > 1000 && Math.random() < 0.4) {
-                        newBall = new SatokoBall(WIDTH / 2, HEIGHT / 2); // 40% chance
-                    } else {
+                
+                    if (score > 2000 && Math.random() < 0.25) {
+                        newBall = new HanyuuBall(WIDTH / 2, HEIGHT / 2); // 25% chance after 2000 score
+                    }
+                    else if (score > 1000 && Math.random() < 0.25) {
+                        newBall = new SatokoBall(WIDTH / 2, HEIGHT / 2); // 25% chance after 1000 score
+                    }
+                    else {
                         newBall = new RikaBall(WIDTH / 2, HEIGHT / 2);
                     }
-
+                
                     newBalls.add(newBall);
                 }
             }
@@ -121,6 +137,22 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             }
         }
 
+        Iterator<Fragment> fragmentIt = fragments.iterator();
+        while (fragmentIt.hasNext()) {
+            Fragment frag = fragmentIt.next();
+            frag.move(HEIGHT);
+
+            if (frag.getRect().intersects(paddle.getRect())) {
+                lives += 2;
+                frag.collected = true;
+                GamePanel.playSoundStatic("fragment.wav");
+            }
+
+            if (frag.collected) {
+                fragmentIt.remove();
+            }
+        }
+
         balls.addAll(newBalls);
         repaint();
 
@@ -132,14 +164,19 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     private void restartGame() {
         score = 0;
-        lives = 20;
+        lives = 30;
         hitCount = 0;
         isGameOver = false;
         backgroundImage = new ImageIcon(getClass().getResource("/res/classroom.jpg")).getImage();
         balls.clear();
         balls.add(new RikaBall(WIDTH / 2, HEIGHT / 2));
         timer.start();
-    }    
+    }
+
+    public static void addLife() {
+        lives++;
+        GamePanel.playSoundStatic("fragment.wav");
+    }
 
     public static void playSoundStatic(String soundFile) {
         try {

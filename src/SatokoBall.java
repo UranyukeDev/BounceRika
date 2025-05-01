@@ -11,7 +11,7 @@ public class SatokoBall extends Ball {
         Random rand = new Random();
         speedX = rand.nextBoolean() ? 3 : -7;
         speedY = -7;
-        GamePanel.playSoundStatic("ohohoho.wav");
+        GamePanel.playSoundStatic("nandesutte.wav");
     }
 
     @Override
