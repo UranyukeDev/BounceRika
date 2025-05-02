@@ -106,10 +106,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
                 ball.playBounceSound();
 
-                if (hitCount % 5 == 0) {
+                if (hitCount % 6 == 0) {
                     Ball newBall;
                 
-                    if (score > 2000 && Math.random() < 0.25) {
+                    if (score > 3000 && Math.random() < 0.2) {
+                        newBall = new RenaBall(WIDTH / 2, HEIGHT / 2); // 20% chance after 3000 score
+                    }
+                    else if (score > 2000 && Math.random() < 0.25) {
                         newBall = new HanyuuBall(WIDTH / 2, HEIGHT / 2); // 25% chance after 2000 score
                     }
                     else if (score > 1000 && Math.random() < 0.25) {
@@ -130,7 +133,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 }
             }
 
-            if (score >= 2000) {
+            if (score >= 5000) {
+                backgroundImage = new ImageIcon(getClass().getResource("/res/shrine.jpg")).getImage();
+            } else if (score >= 4000) {
+                backgroundImage = new ImageIcon(getClass().getResource("/res/nightvillage.jpg")).getImage();
+            } else if (score >= 3000) {
+                backgroundImage = new ImageIcon(getClass().getResource("/res/damconstructionsite.jpg")).getImage();
+            } else if (score >= 2000) {
                 backgroundImage = new ImageIcon(getClass().getResource("/res/saiguden.jpg")).getImage();
             } else if (score >= 1000) {
                 backgroundImage = new ImageIcon(getClass().getResource("/res/school.jpg")).getImage();
@@ -198,7 +207,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             score = 0;
             lives = 30;
         }
-        if (e.getKeyCode() == KeyEvent.VK_R && isGameOver) {
+        if (e.getKeyCode() == KeyEvent.VK_R) {
             restartGame();
         }
     }
