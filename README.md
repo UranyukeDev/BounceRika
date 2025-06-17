@@ -19,10 +19,10 @@ Bounce Rika-themed balls endlessly using your paddle, survive the onslaught of c
 
 | Ball Type     | Description |
 |---------------|-------------|
-| ![Rika](src/res/rikaball.png) **RikaBall**  | Default bouncy ball — nothing too fancy. |
-| ![Satoko](src/res/satokoball.png) **SatokoBall**| Spawns at 1000 score — moves faster! |
-| ![Hanyuu](src/res/hanyuuball.png) **HanyuuBall**| Spawns at 2000 score — has a 10% chance per bounce to give you +1 life. |
-| ![Rena](src/res/renaball.png) **RenaBall**  | Spawns at 3000 score — unpredictable bounces for extra challenge. |
+| ![Rika](src/res/rikaball.png) | Default bouncy ball — nothing too fancy. |
+| ![Satoko](src/res/satokoball.png) | Spawns at 1000 score — moves faster! |
+| ![Hanyuu](src/res/hanyuuball.png) | Spawns at 2000 score — has a 10% chance per bounce to give you +1 life. |
+| ![Rena](src/res/renaball.png) | Spawns at 3000 score — unpredictable bounces for extra challenge. |
 
 ## Requirements
 - Java 8 or higher
